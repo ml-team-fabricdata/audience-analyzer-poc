@@ -19,44 +19,114 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0a0a0f 0%, #1a0b2e 100%);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+    
+    .glass-card {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .gradient-border {
+      position: relative;
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(168, 85, 247, 0.1));
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+    
+    .gradient-border::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 2px;
+      background: linear-gradient(135deg, #06b6d4, #a855f7);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    
+    .btn-shimmer {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-shimmer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn-shimmer:hover::before {
+      left: 100%;
+    }
+    
+    .stat-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(6, 182, 212, 0.2);
     }
   </style>
 </head>
 
-<body class="min-h-screen bg-black text-white">
+<body class="min-h-screen text-white">
+
+  <!-- Gradient Background Overlay -->
+  <div class="fixed inset-0 bg-gradient-to-br from-cyan-500/5 via-purple-500/5 to-pink-500/5 pointer-events-none"></div>
 
   <!-- HEADER -->
-  <header class="max-w-6xl mx-auto px-6 py-10 text-center">
-    <img
-      src="https://framerusercontent.com/assets/YhHtO4AfpyCgmWFZ6i3dcmRLcAI.png"
-      alt="Fabric"
-      class="h-10 mx-auto mb-6"
-    />
-    <h1 class="text-4xl font-extrabold mb-3">
-      TMDB Audience Analyzer
-    </h1>
-    <p class="text-gray-400 max-w-2xl mx-auto">
-      Proof of Concept — Automated demographic and psychographic inference
-      from TMDB metadata using LLMs.
-    </p>
+  <header class="relative max-w-6xl mx-auto px-6 py-12 text-center">
+    <div class="fade-in">
+      <img
+        src="https://framerusercontent.com/assets/YhHtO4AfpyCgmWFZ6i3dcmRLcAI.png"
+        alt="Fabric"
+        class="h-12 mx-auto mb-8 drop-shadow-2xl"
+      />
+      <h1 class="text-5xl md:text-6xl font-extrabold mb-4 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+        Audience Analyzer
+      </h1>
+      <p class="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
+        Proof of Concept — Automated demographic and psychographic inference
+        using advanced LLMs.
+      </p>
+    </div>
   </header>
 
   <!-- INPUT -->
-  <section class="max-w-3xl mx-auto px-6">
-    <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 space-y-4">
-      <label class="block text-sm font-semibold text-cyan-400">
+  <section class="relative max-w-3xl mx-auto px-6 mb-12">
+    <div class="glass-card rounded-2xl p-8 shadow-2xl fade-in">
+      <label class="block text-sm font-semibold text-cyan-400 mb-3 uppercase tracking-wider">
         TMDB Content URL
       </label>
       <input
         id="tmdbUrl"
         type="text"
         placeholder="https://www.themoviedb.org/tv/106379-fallout"
-        class="w-full bg-black border border-gray-700 rounded-md px-4 py-2 text-sm font-mono text-white focus:outline-none focus:border-cyan-500"
+        class="w-full bg-black/50 border border-gray-700 rounded-xl px-5 py-3.5 text-sm font-mono text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all"
       />
 
       <button
         id="analyzeBtn"
-        class="mt-4 w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 transition-all rounded-md py-3 font-semibold"
+        class="mt-6 w-full bg-gradient-to-r from-cyan-500 via-purple-600 to-pink-600 hover:from-cyan-600 hover:via-purple-700 hover:to-pink-700 transition-all duration-300 rounded-xl py-4 font-bold text-lg shadow-xl hover:shadow-2xl hover:shadow-purple-500/50 btn-shimmer transform hover:scale-[1.02]"
       >
         Analyze Content
       </button>
@@ -64,9 +134,9 @@
   </section>
 
   <!-- RESULTS -->
-  <section id="results" class="max-w-6xl mx-auto px-6 py-10">
-    <div class="text-center text-gray-500 text-sm">
-      Paste a TMDB URL and click “Analyze Content”.
+  <section id="results" class="relative max-w-6xl mx-auto px-6 pb-16">
+    <div class="text-center text-gray-500 text-sm py-8">
+      📊 Paste a TMDB URL and click "Analyze Content" to get started.
     </div>
   </section>
 
@@ -83,15 +153,16 @@
 
       if (!tmdbUrl) {
         resultsDiv.innerHTML = `
-          <div class="text-center text-red-400">
-            Please enter a TMDB URL.
+          <div class="glass-card rounded-2xl p-6 text-center border-red-500/30 fade-in">
+            <div class="text-red-400 font-semibold">⚠️ Please enter a TMDB URL.</div>
           </div>`;
         return;
       }
 
       resultsDiv.innerHTML = `
-        <div class="text-center text-gray-400">
-          Analyzing content…
+        <div class="glass-card rounded-2xl p-12 text-center fade-in">
+          <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-cyan-400 border-t-transparent mb-4"></div>
+          <div class="text-gray-400 font-medium">Analyzing content with AI...</div>
         </div>`;
 
       try {
@@ -111,8 +182,8 @@
 
       } catch (err) {
         resultsDiv.innerHTML = `
-          <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-400">
-            ${err.message}
+          <div class="glass-card rounded-2xl p-6 border-red-500/30 fade-in">
+            <div class="text-red-400 font-semibold">❌ ${err.message}</div>
           </div>`;
       }
     });
@@ -122,56 +193,102 @@
       const a = data.audience;
 
       resultsDiv.innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <img
-              src="${m.poster}"
-              class="rounded-lg border border-gray-700 shadow-lg"
-            />
+        <div class="space-y-8">
+          <!-- Main Content Card -->
+          <div class="glass-card rounded-2xl p-8 shadow-2xl fade-in">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <!-- Poster -->
+              <div class="lg:col-span-1">
+                <img
+                  src="${m.poster}"
+                  class="rounded-xl border-2 border-cyan-500/30 shadow-2xl w-full hover:scale-105 transition-transform duration-300"
+                  alt="${m.title} poster"
+                />
+              </div>
+
+              <!-- Info -->
+              <div class="lg:col-span-2 space-y-5">
+                <div>
+                  <h2 class="text-4xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
+                    ${m.title}
+                  </h2>
+                  <span class="text-gray-400 text-xl font-medium">${m.year}</span>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                  <span class="px-4 py-1.5 bg-cyan-500/20 text-cyan-300 rounded-full text-sm font-semibold border border-cyan-500/30">
+                    ${m.type}
+                  </span>
+                  ${m.genres.split(', ').map(genre => `
+                    <span class="px-4 py-1.5 bg-purple-500/20 text-purple-300 rounded-full text-sm font-semibold border border-purple-500/30">
+                      ${genre}
+                    </span>
+                  `).join('')}
+                </div>
+
+                <p class="text-gray-300 text-base leading-relaxed">
+                  ${m.synopsis}
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                  <div class="glass-card rounded-xl p-4 stat-card">
+                    <div class="text-xs text-cyan-400 font-semibold uppercase tracking-wider mb-1">Cast</div>
+                    <div class="text-sm text-gray-300">${m.cast}</div>
+                  </div>
+                  <div class="glass-card rounded-xl p-4 stat-card">
+                    <div class="text-xs text-purple-400 font-semibold uppercase tracking-wider mb-1">Directors</div>
+                    <div class="text-sm text-gray-300">${m.directors}</div>
+                  </div>
+                </div>
+
+                <div class="glass-card rounded-xl p-4">
+                  <div class="text-xs text-pink-400 font-semibold uppercase tracking-wider mb-1">Keywords</div>
+                  <div class="text-sm text-gray-300">${m.keywords}</div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="md:col-span-2 space-y-4">
-            <h2 class="text-3xl font-bold">
-              ${m.title} <span class="text-gray-400 text-xl">(${m.year})</span>
-            </h2>
-
-            <p class="text-sm text-cyan-400 uppercase tracking-wide">
-              ${m.type} · ${m.genres}
+          <!-- Psychographic Profile -->
+          <div class="glass-card rounded-2xl p-8 shadow-2xl fade-in">
+            <h3 class="text-2xl font-bold mb-4 flex items-center gap-3">
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                🧠 Psychographic Profile
+              </span>
+            </h3>
+            <p class="text-gray-300 text-base leading-relaxed mb-6">
+              ${a.psychographic_profile}
             </p>
 
-            <p class="text-gray-300 text-sm leading-relaxed">
-              ${m.synopsis}
-            </p>
-
-            <div class="text-xs text-gray-400 space-y-1">
-              <div><strong>Cast:</strong> ${m.cast}</div>
-              <div><strong>Directors:</strong> ${m.directors}</div>
-              <div><strong>Keywords:</strong> ${m.keywords}</div>
-            </div>
-
-            <div class="pt-4">
-              <h3 class="text-sm font-semibold text-purple-400 mb-1">
-                Psychographic Profile
-              </h3>
-              <p class="text-gray-300 text-sm">
-                ${a.psychographic_profile}
-              </p>
-            </div>
-
-            <div class="pt-3 text-xs text-gray-400">
-              <strong>Brand affinities:</strong> ${a.brand_affinities.join(", ")}<br/>
-              <strong>Emotional tone:</strong> ${a.emotional_tone}<br/>
-              <strong>IAB category:</strong> ${a.iab_content_category}<br/>
-              <strong>Confidence:</strong> ${(a.confidence * 100).toFixed(0)}%
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="glass-card rounded-xl p-5 stat-card border-cyan-500/20">
+                <div class="text-xs text-cyan-400 font-semibold uppercase tracking-wider mb-2">Brand Affinities</div>
+                <div class="text-sm text-gray-300">${a.brand_affinities.join(", ")}</div>
+              </div>
+              <div class="glass-card rounded-xl p-5 stat-card border-purple-500/20">
+                <div class="text-xs text-purple-400 font-semibold uppercase tracking-wider mb-2">Emotional Tone</div>
+                <div class="text-sm text-gray-300">${a.emotional_tone}</div>
+              </div>
+              <div class="glass-card rounded-xl p-5 stat-card border-pink-500/20">
+                <div class="text-xs text-pink-400 font-semibold uppercase tracking-wider mb-2">IAB Category</div>
+                <div class="text-sm text-gray-300">${a.iab_content_category}</div>
+              </div>
+              <div class="glass-card rounded-xl p-5 stat-card border-green-500/20">
+                <div class="text-xs text-green-400 font-semibold uppercase tracking-wider mb-2">Confidence</div>
+                <div class="text-2xl font-bold text-green-400">${(a.confidence * 100).toFixed(0)}%</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="mt-12 bg-gray-900 border border-gray-800 rounded-lg p-6">
-          <h3 class="text-lg font-semibold mb-4">
-            Demographic Distribution
-          </h3>
-          <canvas id="demographicRadar"></canvas>
+          <!-- Demographics Chart -->
+          <div class="glass-card rounded-2xl p-8 shadow-2xl fade-in">
+            <h3 class="text-2xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
+              📊 Demographic Distribution
+            </h3>
+            <div class="max-w-2xl mx-auto">
+              <canvas id="demographicRadar"></canvas>
+            </div>
+          </div>
         </div>
       `;
 
@@ -187,12 +304,19 @@
         data: {
           labels: labels,
           datasets: [{
-            label: "Audience share",
+            label: "Audience Share",
             data: values,
             fill: true,
-            backgroundColor: "rgba(168, 85, 247, 0.2)",
+            backgroundColor: "rgba(168, 85, 247, 0.15)",
             borderColor: "rgba(168, 85, 247, 1)",
-            pointBackgroundColor: "rgba(34, 211, 238, 1)"
+            borderWidth: 2,
+            pointBackgroundColor: "rgba(6, 182, 212, 1)",
+            pointBorderColor: "#fff",
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            pointHoverBackgroundColor: "rgba(236, 72, 153, 1)",
+            pointHoverBorderColor: "#fff"
           }]
         },
         options: {
@@ -201,18 +325,22 @@
               min: 0,
               max: 1,
               ticks: {
-                display: false
+                display: false,
+                stepSize: 0.2
               },
               grid: {
-                color: "rgba(255,255,255,0.1)"
+                color: "rgba(255,255,255,0.1)",
+                lineWidth: 1
               },
               angleLines: {
-                color: "rgba(255,255,255,0.1)"
+                color: "rgba(255,255,255,0.1)",
+                lineWidth: 1
               },
               pointLabels: {
-                color: "#9CA3AF",
+                color: "#d1d5db",
                 font: {
-                  size: 11
+                  size: 12,
+                  weight: '600'
                 }
               }
             }
@@ -220,6 +348,20 @@
           plugins: {
             legend: {
               display: false
+            },
+            tooltip: {
+              backgroundColor: 'rgba(17, 24, 39, 0.95)',
+              titleColor: '#06b6d4',
+              bodyColor: '#fff',
+              borderColor: 'rgba(6, 182, 212, 0.3)',
+              borderWidth: 1,
+              padding: 12,
+              displayColors: false,
+              callbacks: {
+                label: function(context) {
+                  return (context.parsed.r * 100).toFixed(1) + '%';
+                }
+              }
             }
           }
         }
