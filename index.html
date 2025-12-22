@@ -275,8 +275,8 @@
                     <div class="text-gray-300 mt-0.5 compact-spacing">${a.emotional_tone}</div>
                   </div>
                   <div class="text-xs">
-                    <span class="text-pink-400 font-semibold uppercase tracking-wider">IAB Category</span>
-                    <div class="text-gray-300 mt-0.5 compact-spacing">${a.iab_content_category}</div>
+                    <span class="text-pink-400 font-semibold uppercase tracking-wider">IAB Content Categories</span>
+                    <div class="mt-1 space-y-1">${renderIabCategories(a.iab_content_categories)}</div>
                   </div>
                 </div>
               </div>
@@ -313,6 +313,7 @@
       renderTable(a.demographic_distribution);
     }
 
+    
     function renderRadar(dist) {
       const labels = Object.keys(dist);
       const values = Object.values(dist);
@@ -399,31 +400,66 @@
       });
     }
 
-    function renderTable(dist) {
-      const tableDiv = document.getElementById("demographicTable");
-      const sortedEntries = Object.entries(dist).sort((a, b) => b[1] - a[1]);
+    <script>
+  function renderTable(dist) {
+    const tableDiv = document.getElementById("demographicTable");
+    const sortedEntries = Object.entries(dist).sort((a, b) => b[1] - a[1]);
+    
+    let tableHTML = '';
+    sortedEntries.forEach(([demographic, value]) => {
+      const percentage = (value * 100).toFixed(1);
+      const barWidth = value * 100;
       
-      let tableHTML = '';
-      sortedEntries.forEach(([demographic, value]) => {
-        const percentage = (value * 100).toFixed(1);
-        const barWidth = value * 100;
-        
-        tableHTML += `
-          <div class="glass-card rounded-lg p-2.5">
-            <div class="flex justify-between items-center mb-1">
-              <span class="text-xs font-semibold text-gray-200">${demographic}</span>
-              <span class="text-xs font-bold text-cyan-400">${percentage}%</span>
-            </div>
-            <div class="w-full bg-gray-800 rounded-full h-2 overflow-hidden">
-              <div class="bg-gradient-to-r from-cyan-500 to-purple-500 h-full rounded-full transition-all duration-500" style="width: ${barWidth}%"></div>
-            </div>
+      tableHTML += `
+        <div class="glass-card rounded-lg p-2.5">
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-xs font-semibold text-gray-200">${demographic}</span>
+            <span class="text-xs font-bold text-cyan-400">${percentage}%</span>
           </div>
-        `;
-      });
-      
-      tableDiv.innerHTML = tableHTML;
+          <div class="w-full bg-gray-800 rounded-full h-2 overflow-hidden">
+            <div class="bg-gradient-to-r from-cyan-500 to-purple-500 h-full rounded-full transition-all duration-500" style="width: ${barWidth}%"></div>
+          </div>
+        </div>
+      `;
+    });
+    
+    tableDiv.innerHTML = tableHTML;
+  }
+
+  function renderIabCategories(categories) {
+    if (!Array.isArray(categories) || categories.length === 0) {
+      return `<div class="text-gray-400 italic text-xs">
+        No IAB category inferred
+      </div>`;
     }
-  </script>
+
+    return categories.map(cat => {
+      const levels = [
+        cat.level_1,
+        cat.level_2,
+        cat.level_3
+      ].filter(Boolean);
+
+      return `
+        <div class="flex flex-wrap gap-1 mb-1.5">
+          ${levels.map((level, idx) => `
+            <span class="
+              px-2 py-0.5 rounded-full text-xs font-semibold border
+              ${idx === 0
+                ? 'bg-pink-500/20 text-pink-300 border-pink-500/30'
+                : idx === 1
+                  ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
+                  : 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30'
+              }
+            ">
+              ${level}
+            </span>
+          `).join('')}
+        </div>
+      `;
+    }).join('');
+  }
+</script>
 
 </body>
 </html>
