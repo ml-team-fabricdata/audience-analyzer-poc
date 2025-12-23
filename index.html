@@ -305,6 +305,10 @@
             <h3 class="text-base font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
               Demographic Distribution
             </h3>
+            <!-- Added explanation note about normalized scale -->
+            <p class="text-xs text-gray-400 mb-3 compact-spacing">
+              Note: Radar scale is dynamically normalized to observed maximum for better visibility of distribution patterns.
+            </p>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <!-- Chart -->
@@ -334,6 +338,9 @@
       const labels = Object.keys(dist);
       const values = Object.values(dist);
 
+      const maxValue = Math.max(...values);
+      const scaledMaxValue = Math.ceil((maxValue * 100) * 1.1); // Convert to percentage and add 10% padding
+
       new Chart(document.getElementById("demographicRadar"), {
         type: "radar",
         data: {
@@ -360,12 +367,12 @@
           scales: {
             r: {
               min: 0,
-              max: 100,
+              max: scaledMaxValue,
               ticks: {
                 display: true,
                 color: 'rgba(156, 163, 175, 0.7)',
                 backdropColor: 'transparent',
-                stepSize: 20,
+                stepSize: Math.ceil(scaledMaxValue / 5),
                 font: {
                   size: 11
                 },
